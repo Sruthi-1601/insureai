@@ -9,6 +9,8 @@ Insurance companies lose billions annually due to fraudulent claims. Traditional
 
 Hackathon introduces real-time, intelligent fraud detection using Machine Learning (XGBoost) to prevent losses before they happen.
 
+
+
 🎯 Problem Statement
 
 Auto insurance fraud results in massive financial losses each year. Existing fraud detection systems:
@@ -35,6 +37,9 @@ Improves accuracy
 
 Maintains smooth customer experience
 
+
+
+
 💡 Proposed Solution
 
 InsureAI is a real-time AI-powered fraud detection web application that evaluates claims at the moment they are submitted.
@@ -50,6 +55,8 @@ The system uses an XGBoost machine learning model trained on historical insuranc
 Response time: < 2 seconds
 
 🧠 System Architecture (3-Layer Design)
+
+
 🔹 Layer 1 — Risk Scoring Engine
 
 Each claim receives an instant fraud score from 0 to 100.
@@ -70,6 +77,7 @@ Number of witnesses
 
 Model: XGBoost Classifier
 
+
 🔹 Layer 2 — Pattern Detection
 
 The system detects suspicious behavioral patterns such as:
@@ -84,6 +92,7 @@ Repeated claim behavior patterns
 
 This allows detection beyond traditional rule-based systems.
 
+
 🔹 Layer 3 — Decision Engine
 
 Based on the fraud score:
@@ -95,6 +104,10 @@ Fraud Score	Decision
 
 This reduces manual workload while maintaining high accuracy.
 
+
+
+
+
 🛠 Tech Stack
 
 Python
@@ -105,11 +118,11 @@ Scikit-learn
 
 Pandas / NumPy
 
-Flask / FastAPI (if used)
+Flask / FastAPI 
 
-HTML / CSS / JavaScript (if frontend included)
+HTML / CSS / JavaScript
 
-(Modify based on what you actually used.)
+
 
 ⚡ Key Advantages
 
@@ -122,6 +135,8 @@ Reduced financial loss
 Reduced manual review time
 
 Scalable and production-ready architecture
+
+
 
 📦 Installation
 
@@ -137,6 +152,10 @@ pip install -r requirements.txt
 Run the application:
 
 python app.py
+
+
+
+
 📊 Future Improvements
 
 SHAP explainability integration
@@ -148,6 +167,9 @@ Cloud deployment (AWS / Azure)
 Dashboard for fraud analytics
 
 Continuous learning system
+
+
+
 
 📜 License
 
