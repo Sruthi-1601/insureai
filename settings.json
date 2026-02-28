@@ -1,0 +1,14 @@
+{
+  "editor.formatOnSave": true,
+  "python.defaultInterpreterPath": "${workspaceFolder}/venv/Scripts/python",
+  "files.associations": {
+    "*.html": "html"
+  },
+  "emmet.includeLanguages": {
+    "jinja-html": "html"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8"
+  },
+  "python.analysis.extraPaths": ["${workspaceFolder}"]
+}

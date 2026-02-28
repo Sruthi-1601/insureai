@@ -1,0 +1,73 @@
+/* ============================================================
+   metrics.css — Dashboard Metric Cards
+   InsureAI Fraud Detection System
+   ============================================================ */
+
+.metrics-row {
+  position: relative;
+  z-index: 5;
+  max-width: 1200px;
+  margin: 32px auto 0;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.metric-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.metric-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+.metric-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.metric-card.blue::after  { background: var(--blue); }
+.metric-card.green::after { background: var(--green); }
+.metric-card.amber::after { background: var(--amber); }
+.metric-card.red::after   { background: var(--red); }
+
+.metric-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  display: grid; place-items: center;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.metric-card.blue  .metric-icon { background: var(--blue-lt); }
+.metric-card.green .metric-icon { background: var(--green-lt); }
+.metric-card.amber .metric-icon { background: var(--amber-lt); }
+.metric-card.red   .metric-icon { background: var(--red-lt); }
+
+.metric-label {
+  font-size: 11px; font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px; font-weight: 700; line-height: 1;
+}
+.metric-card.blue  .metric-value { color: var(--blue); }
+.metric-card.green .metric-value { color: var(--green); }
+.metric-card.amber .metric-value { color: var(--amber); }
+.metric-card.red   .metric-value { color: var(--red); }
+
+.metric-sub { font-size: 11px; color: var(--muted2); margin-top: 4px; }
+
+@media (max-width: 960px) {
+  .metrics-row { grid-template-columns: 1fr 1fr; padding: 0 16px; }
+}

@@ -1,0 +1,65 @@
+/* ============================================================
+   hero.css — Hero Section
+   InsureAI Fraud Detection System
+   ============================================================ */
+
+.hero {
+  position: relative;
+  z-index: 5;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 64px 40px 56px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(26,86,219,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue-lt);
+  border: 1px solid var(--blue-mid);
+  border-radius: 100px;
+  padding: 5px 16px;
+  font-size: 11px; font-weight: 600;
+  color: var(--blue);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 24px;
+  animation: fadeUp 0.7s ease both;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 6vw, 66px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  max-width: 700px;
+  margin: 0 auto 20px;
+  animation: fadeUp 0.7s 0.08s ease both;
+}
+.hero h1 em { font-style: italic; color: var(--blue); }
+
+.hero p {
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 480px;
+  margin: 0 auto;
+  animation: fadeUp 0.7s 0.16s ease both;
+  font-weight: 300;
+}
+
+@media (max-width: 960px) {
+  .hero { padding: 40px 20px; }
+}

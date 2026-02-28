@@ -1,0 +1,118 @@
+/* ============================================================
+   sidebar.css — Score Ring, Factors, Activity Log
+   InsureAI Fraud Detection System
+   ============================================================ */
+
+.sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Score Ring ── */
+.score-body { padding: 28px 24px 20px; text-align: center; }
+
+.score-ring-wrap {
+  width: 160px; height: 160px;
+  margin: 0 auto 20px;
+  position: relative;
+}
+
+.score-svg { transform: rotate(-90deg); }
+
+.score-track { fill: none; stroke: var(--off2); stroke-width: 10; }
+
+.score-fill {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 440;
+  stroke-dashoffset: 440;
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.34,1.56,0.64,1), stroke 0.4s;
+}
+
+.score-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+
+.score-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 46px; font-weight: 800; line-height: 1;
+  color: var(--ink);
+  transition: color 0.4s;
+}
+.score-sub { font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+/* ── Verdict Badge ── */
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
+  border: 1.5px solid;
+  margin-bottom: 14px;
+  transition: all 0.4s;
+}
+.verdict.idle    { background: var(--off2);    border-color: var(--border2);  color: var(--muted); }
+.verdict.approve { background: var(--green-lt); border-color: var(--green-mid); color: var(--green); }
+.verdict.review  { background: var(--amber-lt); border-color: var(--amber-mid); color: var(--amber); }
+.verdict.fraud   { background: var(--red-lt);   border-color: var(--red-mid);   color: var(--red); }
+
+.verdict-desc {
+  font-size: 11px; color: var(--muted); line-height: 1.7;
+  max-width: 260px; margin: 0 auto;
+}
+
+/* ── Confidence Bars ── */
+.conf-wrap    { padding: 16px 24px 20px; border-top: 1px solid var(--border); }
+.conf-heading { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+.conf-row     { margin-bottom: 12px; }
+
+.conf-row-head { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 5px; }
+.conf-row-head span:first-child { color: var(--ink2); font-weight: 500; }
+.conf-row-head span:last-child  { color: var(--muted); }
+
+.conf-track { height: 5px; background: var(--off2); border-radius: 3px; overflow: hidden; }
+.conf-fill  { height: 100%; border-radius: 3px; width: 0; transition: width 1.2s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* ── Risk Factors ── */
+.factors-wrap        { padding: 0 24px 20px; }
+.factors-placeholder { padding: 18px 0; text-align: center; color: var(--muted2); font-size: 12px; }
+
+.factor-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  animation: fadeUp 0.3s ease both;
+}
+.factor-item:last-child { border-bottom: none; }
+
+.factor-label  { font-size: 12px; color: var(--ink2); font-weight: 500; }
+.factor-right  { display: flex; align-items: center; gap: 8px; }
+.factor-bar    { width: 72px; height: 5px; background: var(--off2); border-radius: 3px; overflow: hidden; }
+.factor-fill   { height: 100%; border-radius: 3px; transition: width 1s cubic-bezier(0.34,1.56,0.64,1); }
+.factor-pct    { font-size: 10px; color: var(--muted); width: 40px; text-align: right; font-weight: 600; }
+
+/* ── Activity Log ── */
+.log-wrap {
+  padding: 14px 24px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.log-wrap::-webkit-scrollbar { width: 4px; }
+.log-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.log-row {
+  display: flex; gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  animation: fadeUp 0.25s ease both;
+}
+.log-row:last-child { border-bottom: none; }
+.log-time { color: var(--muted2); white-space: nowrap; }
+.log-msg  { color: var(--ink2); line-height: 1.5; }
+.log-msg b    { color: var(--blue); font-weight: 600; }
+.log-msg .ok  { color: var(--green); font-weight: 600; }
+.log-msg .warn{ color: var(--amber); font-weight: 600; }
+.log-msg .bad { color: var(--red);   font-weight: 600; }

@@ -1,0 +1,50 @@
+/* ============================================================
+   loading.css — Loading Overlay
+   InsureAI Fraud Detection System
+   ============================================================ */
+
+.loading-overlay {
+  position: fixed; inset: 0;
+  background: rgba(247,246,243,0.9);
+  backdrop-filter: blur(12px);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.loading-overlay.show { opacity: 1; pointer-events: all; }
+
+.loading-spinner {
+  width: 56px; height: 56px;
+  margin-bottom: 24px;
+  border: 3px solid var(--border2);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.loading-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700;
+  color: var(--ink); margin-bottom: 6px;
+}
+.loading-sub { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
+
+.loading-steps { display: flex; flex-direction: column; gap: 8px; min-width: 300px; }
+
+.loading-step {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  font-size: 12px; color: var(--muted2);
+  opacity: 0.4;
+  transition: all 0.3s;
+}
+.loading-step.active { opacity: 1; color: var(--ink2); border-color: var(--blue-mid); background: var(--blue-lt); }
+.loading-step.done   { opacity: 1; color: var(--green); border-color: var(--green-mid); background: var(--green-lt); }
+
+.ls-icon { font-size: 16px; width: 22px; text-align: center; }

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InsureAI — Fraud Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/hero.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/metrics.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/guide.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}" />
+</head>
+<body>
+
+  <!-- ─── LOADING OVERLAY ─── -->
+  <div class="loading-overlay" id="overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-title">Analysing Claim</div>
+    <div class="loading-sub">Gradient Boosting model is processing your submission</div>
+    <div class="loading-steps">
+      <div class="loading-step" id="s1"><span class="ls-icon">🔍</span> Extracting claim features</div>
+      <div class="loading-step" id="s2"><span class="ls-icon">🤖</span> Running inference engine</div>
+      <div class="loading-step" id="s3"><span class="ls-icon">📊</span> Evaluating risk patterns</div>
+      <div class="loading-step" id="s4"><span class="ls-icon">⚖️</span> Generating decision</div>
+    </div>
+  </div>
+
+  <!-- ─── HEADER ─── -->
+  <header>
+    <div class="logo">
+      <div class="logo-mark">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M9 2L16 6V12L9 16L2 12V6L9 2Z" stroke="white" stroke-width="1.8" fill="none"/>
+          <circle cx="9" cy="9" r="2.5" fill="white"/>
+        </svg>
+      </div>
+      Insure<span>AI</span>
+    </div>
+    <div class="header-right">
+      <div class="live-badge"><div class="live-dot"></div> Live</div>
+      <div class="header-stat">Accuracy <strong id="hAccuracy">--</strong></div>
+      <div class="header-stat">Claims <strong id="hClaims">0</strong></div>
+      <div class="header-stat">Fraud Blocked <strong id="hSaved">$0</strong></div>
+      <!-- Dark / Light Mode Toggle -->
+      <div style="display:flex;align-items:center;gap:7px">
+        <span class="theme-toggle-label" id="themeLabel">☀️</span>
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode" aria-label="Toggle dark mode">
+          <div class="theme-toggle-knob" id="themeKnob">☀️</div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <div class="hero">
+    <div class="hero-eyebrow">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+        <circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M5 3v2l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      AI-Powered · Real-Time · Real Fraud Dataset
+    </div>
+    <h1>Detect Insurance Fraud<br><em>Before It Pays Out</em></h1>
+    <p>Submit any auto insurance claim and get an instant Gradient Boosting fraud risk score trained on real fraud data — in under 2 seconds.</p>
+  </div>
+
+  <!-- ─── PROGRESS STEPS ─── -->
+  <div class="progress-track">
+    <div class="progress-inner">
+      <div class="prog-step active" id="ps1">
+        <div class="prog-num">1</div><div class="prog-label">Policy<br>Details</div>
+      </div>
+      <div class="prog-step" id="ps2">
+        <div class="prog-num">2</div><div class="prog-label">Incident<br>Info</div>
+      </div>
+      <div class="prog-step" id="ps3">
+        <div class="prog-num">3</div><div class="prog-label">AI<br>Processing</div>
+      </div>
+      <div class="prog-step" id="ps4">
+        <div class="prog-num">4</div><div class="prog-label">Risk<br>Scoring</div>
+      </div>
+      <div class="prog-step" id="ps5">
+        <div class="prog-num">5</div><div class="prog-label">Final<br>Decision</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── METRIC CARDS ─── -->
+  <div class="metrics-row">
+    <div class="metric-card blue">
+      <div class="metric-icon">📋</div>
+      <div class="metric-label">Total Claims</div>
+      <div class="metric-value" id="mTotal">0</div>
+      <div class="metric-sub">processed this session</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-icon">✅</div>
+      <div class="metric-label">Auto Approved</div>
+      <div class="metric-value" id="mApprove">0</div>
+      <div class="metric-sub">low risk</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-icon">👀</div>
+      <div class="metric-label">Manual Review</div>
+      <div class="metric-value" id="mReview">0</div>
+      <div class="metric-sub">needs checking</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-icon">🚨</div>
+      <div class="metric-label">Fraud Flagged</div>
+      <div class="metric-value" id="mFraud">0</div>
+      <div class="metric-sub" id="mSavedSub">$0 saved</div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION: SUBMIT CLAIM ─── -->
+  <div class="section-divider" style="margin-top:36px">
+    <h2>Submit Claim for Analysis</h2>
+  </div>
+
+  <!-- ─── MAIN LAYOUT ─── -->
+  <div class="main-wrap">
+
+    <!-- FORM CARD -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Claim Details</div>
+        <div class="card-badge">Gradient Boosting · 29 Features</div>
+      </div>
+
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">1</div>
+          <div class="how-step-title">Fill Policy Info</div>
+          <div class="how-step-desc">Enter policy age, prior claims, deductible, and premium details.</div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">2</div>
+          <div class="how-step-title">Add Incident Details</div>
+          <div class="how-step-desc">Describe the incident type, severity, vehicles, injuries, witnesses, and police report status.</div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">3</div>
+          <div class="how-step-title">Get Instant Decision</div>
+          <div class="how-step-desc">Click Analyse — the model returns a fraud score and decision in under 2 seconds.</div>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+
+        <!-- ── STEP 1: Policy Information ── -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-step-pill">Step 1</div>
+            <h3>Policy Information</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Months as Customer</label>
+              <input type="number" id="fMonths" placeholder="e.g. 24" min="0" value="24" />
+            </div>
+            <div class="form-group">
+              <label>Customer Age</label>
+              <input type="number" id="fAge" placeholder="e.g. 38" min="18" max="90" value="38" />
+            </div>
+            <div class="form-group">
+              <label>Prior Claims on Record</label>
+              <input type="number" id="fPrior" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+            <div class="form-group">
+              <label>Policy Deductible ($)</label>
+              <input type="number" id="fDeduct" placeholder="e.g. 500" min="0" value="500" />
+            </div>
+            <div class="form-group">
+              <label>Annual Premium ($)</label>
+              <input type="number" id="fPremium" placeholder="e.g. 1200" min="0" value="1200" />
+            </div>
+            <div class="form-group">
+              <label>Insured Hobbies</label>
+              <div class="select-wrap">
+                <select id="fHobbies">
+                  <option value="reading" selected>Reading</option>
+                  <option value="sleeping">Sleeping</option>
+                  <option value="chess">Chess</option>
+                  <option value="board-games">Board Games</option>
+                  <option value="video-games">Video Games</option>
+                  <option value="movies">Movies</option>
+                  <option value="exercise">Exercise</option>
+                  <option value="cross-fit">Cross-Fit</option>
+                  <option value="camping">Camping</option>
+                  <option value="hiking">Hiking</option>
+                  <option value="dancing">Dancing</option>
+                  <option value="golf">Golf</option>
+                  <option value="polo">Polo</option>
+                  <option value="yachting">Yachting</option>
+                  <option value="basketball">Basketball</option>
+                  <option value="paintball">Paintball</option>
+                  <option value="kayaking">Kayaking</option>
+                  <option value="skydiving">Skydiving</option>
+                  <option value="base-jumping">Base Jumping</option>
+                  <option value="bungie-jumping">Bungie Jumping</option>
+                </select>
+              </div>
+            </div>
+            <!-- Hidden defaults for removed fields — still sent to model -->
+            <input type="hidden" id="fUmbrella" value="0" />
+            <input type="hidden" id="fCapGains" value="0" />
+            <input type="hidden" id="fCapLoss" value="0" />
+            <input type="hidden" id="fSex" value="MALE" />
+            <input type="hidden" id="fEdu" value="College" />
+            <input type="hidden" id="fRelation" value="husband" />
+            <input type="hidden" id="fOccup" value="tech-support" />
+          </div>
+        </div>
+
+        <!-- ── STEP 2: Incident Details ── -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-step-pill">Step 2</div>
+            <h3>Incident Details</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Incident Type</label>
+              <div class="select-wrap">
+                <select id="fType">
+                  <option value="Single Vehicle Collision">Single Vehicle Collision</option>
+                  <option value="Multi-vehicle Collision">Multi-Vehicle Collision</option>
+                  <option value="Vehicle Theft">Vehicle Theft</option>
+                  <option value="Parked Car">Parked Car</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Incident Severity</label>
+              <div class="select-wrap">
+                <select id="fSeverity">
+                  <option value="Trivial Damage">Trivial Damage</option>
+                  <option value="Minor Damage" selected>Minor Damage</option>
+                  <option value="Major Damage">Major Damage</option>
+                  <option value="Total Loss">Total Loss</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Vehicles Involved</label>
+              <input type="number" id="fVehicles" placeholder="e.g. 1" min="1" max="10" value="1" />
+            </div>
+            <div class="form-group">
+              <label>Bodily Injuries</label>
+              <input type="number" id="fInjuries" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+            <div class="form-group">
+              <label>Witnesses</label>
+              <input type="number" id="fWitness" placeholder="e.g. 1" min="0" value="1" />
+            </div>
+            <div class="form-group">
+              <label>Hour of Incident (0–23)</label>
+              <input type="number" id="fHour" placeholder="e.g. 14" min="0" max="23" value="14" />
+            </div>
+            <div class="form-group">
+              <label>Police Report Filed?</label>
+              <div class="select-wrap">
+                <select id="fPolice">
+                  <option value="YES" selected>Yes</option>
+                  <option value="NO">No</option>
+                  <option value="?">Unknown</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Property Damage?</label>
+              <div class="select-wrap">
+                <select id="fPropDmg">
+                  <option value="NO" selected>No</option>
+                  <option value="YES">Yes</option>
+                  <option value="?">Unknown</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Incident State</label>
+              <div class="select-wrap">
+                <select id="fState"><option value="OH">OH</option></select>
+              </div>
+            </div>
+            <!-- Hidden defaults for removed fields -->
+            <input type="hidden" id="fCollision" value="Front Collision" />
+            <input type="hidden" id="fCity" value="Columbus" />
+          </div>
+        </div>
+
+        <!-- ── STEP 3: Claim Amounts & Vehicle ── -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-step-pill">Step 3</div>
+            <h3>Claim Amounts &amp; Vehicle</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group span3">
+              <label>Total Claim Amount ($)</label>
+              <input type="number" id="fAmount" placeholder="e.g. 15000" min="0" value="15000" />
+            </div>
+            <div class="form-group">
+              <label>Injury Claim ($)</label>
+              <input type="number" id="fInjuryClaim" placeholder="e.g. 0" min="0" value="0" />
+            </div>
+            <div class="form-group">
+              <label>Vehicle Make</label>
+              <div class="select-wrap">
+                <select id="fMake"><option value="Toyota">Toyota</option></select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Vehicle Year</label>
+              <input type="number" id="fVehYear" placeholder="e.g. 2008" min="1990" max="2016" value="2008" />
+            </div>
+            <!-- Hidden defaults for removed fields -->
+            <input type="hidden" id="fPropClaim" value="0" />
+            <input type="hidden" id="fVehClaim" value="0" />
+          </div>
+        </div>
+
+        <button class="submit-btn" id="analyseBtn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm3.5 7.5l-5 3a.5.5 0 01-.75-.43V5a.5.5 0 01.75-.43l5 3a.5.5 0 010 .86z" fill="currentColor"/>
+          </svg>
+          Analyse Claim — Get Instant Score
+        </button>
+
+      </div>
+    </div><!-- end .card -->
+
+    <!-- ── SIDEBAR ── -->
+    <div class="sidebar">
+
+      <!-- Score Ring Card -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Risk Score</div>
+          <div class="card-badge" id="layerBadge">Awaiting Input</div>
+        </div>
+        <div class="score-body">
+          <div class="score-ring-wrap">
+            <svg class="score-svg" width="160" height="160" viewBox="0 0 160 160">
+              <circle class="score-track" cx="80" cy="80" r="70"/>
+              <circle class="score-fill" id="scoreFill" cx="80" cy="80" r="70"/>
+            </svg>
+            <div class="score-center">
+              <div class="score-num" id="scoreNum">—</div>
+              <div class="score-sub">out of 100</div>
+            </div>
+          </div>
+          <div class="verdict idle" id="verdictBadge">
+            <span id="vIcon">⏳</span>
+            <span id="vText">Awaiting Claim</span>
+          </div>
+          <div class="verdict-desc" id="vDesc">
+            Fill in the claim form and click Analyse to receive an instant AI-powered fraud risk decision.
+          </div>
+        </div>
+        <div class="conf-wrap">
+          <div class="conf-heading">Model Confidence</div>
+          <div class="conf-row">
+            <div class="conf-row-head"><span>Low Risk</span><span id="cLow">—</span></div>
+            <div class="conf-track"><div class="conf-fill" id="fLow" style="background:var(--green)"></div></div>
+          </div>
+          <div class="conf-row">
+            <div class="conf-row-head"><span>Medium Risk</span><span id="cMed">—</span></div>
+            <div class="conf-track"><div class="conf-fill" id="fMed" style="background:var(--amber)"></div></div>
+          </div>
+          <div class="conf-row">
+            <div class="conf-row-head"><span>High Risk</span><span id="cHigh">—</span></div>
+            <div class="conf-track"><div class="conf-fill" id="fHigh" style="background:var(--red)"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk Factors Card -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Risk Factors</div>
+          <div class="card-badge" id="factorBadge">0 Detected</div>
+        </div>
+        <div class="factors-wrap" id="factorsWrap">
+          <div class="factors-placeholder">Risk signals appear after analysis</div>
+        </div>
+      </div>
+
+      <!-- Activity Log Card -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Activity Log</div>
+          <div class="live-badge"><div class="live-dot"></div>Live</div>
+        </div>
+        <div class="log-wrap" id="logWrap">
+          <div class="log-row">
+            <div class="log-time">--:--</div>
+            <div class="log-msg">InsureAI <b>v2.0</b> initialised.</div>
+          </div>
+          <div class="log-row">
+            <div class="log-time">--:--</div>
+            <div class="log-msg">Model <b>loaded</b>. Ready to score claims.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .sidebar -->
+  </div><!-- end .main-wrap -->
+
+  <!-- ─── HISTORY TABLE ─── -->
+  <div class="section-divider">
+    <h2>Recent Analysis History</h2>
+  </div>
+  <div class="history-wrap">
+    <div class="card">
+      <div style="padding:0 8px">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Claim ID</th>
+              <th>City</th>
+              <th>Type</th>
+              <th>Amount ($)</th>
+              <th>Vehicles</th>
+              <th>Witnesses</th>
+              <th>Score</th>
+              <th>Decision</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr>
+              <td colspan="9" class="history-empty">No analyses yet. Submit a claim above to begin.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── STEP-BY-STEP GUIDE ─── -->
+  <div class="section-divider">
+    <h2>Step-by-Step Guide</h2>
+  </div>
+  <div class="guide-section">
+    <div class="guide-grid">
+
+      <div>
+        <div class="guide-nav" id="guideNav">
+          <div class="guide-nav-item active" data-panel="1">
+            <div class="nav-num" id="nn1">1</div>
+            <div class="nav-label">Introduction &amp; Overview</div>
+          </div>
+          <div class="guide-nav-item" data-panel="2">
+            <div class="nav-num" id="nn2">2</div>
+            <div class="nav-label">Policy Details Explained</div>
+          </div>
+          <div class="guide-nav-item" data-panel="3">
+            <div class="nav-num" id="nn3">3</div>
+            <div class="nav-label">Incident Details Explained</div>
+          </div>
+          <div class="guide-nav-item" data-panel="4">
+            <div class="nav-num" id="nn4">4</div>
+            <div class="nav-label">3-Layer AI System</div>
+          </div>
+          <div class="guide-nav-item" data-panel="5">
+            <div class="nav-num" id="nn5">5</div>
+            <div class="nav-label">Fraud Signals &amp; Patterns</div>
+          </div>
+          <div class="guide-nav-item" data-panel="6">
+            <div class="nav-num" id="nn6">6</div>
+            <div class="nav-label">Decision Tiers Explained</div>
+          </div>
+          <div class="guide-nav-item" data-panel="7">
+            <div class="nav-num" id="nn7">7</div>
+            <div class="nav-label">Reading the Results</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-panels" id="guidePanels">
+        <!-- Panels injected by guide.js -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <div class="footer-logo">Insure<span>AI</span></div>
+    <div>AI-Powered Auto Insurance Fraud Detection · Gradient Boosting Classifier · Real Dataset</div>
+    <div id="footerStats">Accuracy: — · AUC: —</div>
+  </footer>
+
+  <!-- ─── SCRIPTS ─── -->
+  <script src="{{ url_for('static', filename='js/data.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/guide.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>

@@ -1,176 +1,127 @@
-# insureai
-AI-powered real-time auto insurance fraud detection
-
-🚗 Real-Time Auto Insurance Fraud Detection System
-
-An AI-powered web application that detects potentially fraudulent auto insurance claims at the time of submission — before payouts occur.
-
-Insurance companies lose billions annually due to fraudulent claims. Traditional detection methods rely on manual review and static rule-based systems, which are slow, reactive, and inefficient.
-
-Hackathon introduces real-time, intelligent fraud detection using Machine Learning (XGBoost) to prevent losses before they happen.
-
-
-
-🎯 Problem Statement
-
-Auto insurance fraud results in massive financial losses each year. Existing fraud detection systems:
-
-Rely heavily on manual reviews
-
-Use static rule-based logic
-
-Detect fraud only after payouts
-
-Increase operational costs
-
-Slow down legitimate claims
-
-There is a critical need for a real-time intelligent system that:
-
-Evaluates fraud risk instantly
-
-Reduces human workload
-
-Minimizes financial losses
-
-Improves accuracy
-
-Maintains smooth customer experience
-
-
-
-
-💡 Proposed Solution
-
-InsureAI is a real-time AI-powered fraud detection web application that evaluates claims at the moment they are submitted.
-
-The system uses an XGBoost machine learning model trained on historical insurance data to generate:
-
-🔢 Instant fraud risk score (0–100)
-
-📊 Risk explanation via pattern detection
-
-🧠 Automated decision recommendation
-
-Response time: < 2 seconds
-
-🧠 System Architecture (3-Layer Design)
-
-
-🔹 Layer 1 — Risk Scoring Engine
-
-Each claim receives an instant fraud score from 0 to 100.
-
-Key Features Used:
-
-Incident severity
-
-Policy state
-
-Claim amount
-
-Number of vehicles involved
-
-Injury count
-
-Number of witnesses
-
-Model: XGBoost Classifier
-
-
-🔹 Layer 2 — Pattern Detection
-
-The system detects suspicious behavioral patterns such as:
-
-Policies purchased shortly before accidents
-
-High claim amounts with low incident severity
-
-Multiple vehicles with no witnesses
-
-Repeated claim behavior patterns
-
-This allows detection beyond traditional rule-based systems.
-
-
-🔹 Layer 3 — Decision Engine
-
-Based on the fraud score:
-
-Fraud Score	Decision
-0–30	✅ Auto Approve
-31–70	👀 Manual Review
-71–100	🚨 Flag as Fraud
-
-This reduces manual workload while maintaining high accuracy.
-
-
-
-
-
-🛠 Tech Stack
-
-Python
-
-XGBoost
-
-Scikit-learn
-
-Pandas / NumPy
-
-Flask / FastAPI 
-
-HTML / CSS / JavaScript
-
-
-
-⚡ Key Advantages
-
-Real-time fraud scoring
-
-Machine learning-driven decisions
-
-Reduced financial loss
-
-Reduced manual review time
-
-Scalable and production-ready architecture
-
-
-
-📦 Installation
-
-Clone the repository:
-
-git clone https://github.com/YOUR_USERNAME/hackathon-fraud-detection.git
-cd hackathon-fraud-detection
-
-Install dependencies:
-
+# InsureAI — Insurance Fraud Detection System
+
+Real-time auto insurance fraud detection using a Gradient Boosting classifier
+trained on the provided `insurance_fraud_claims.csv` dataset.
+
+---
+
+## Project Structure
+
+```
+insureai/
+├── app.py                        ← Flask backend (main entry point)
+├── train_model.py                ← Model training script
+├── requirements.txt              ← Python dependencies
+├── insurance_fraud_claims.csv    ← Dataset (place here)
+├── model/
+│   └── insureai_model.pkl        ← Trained model (auto-generated)
+├── templates/
+│   └── index.html                ← Main HTML page (Jinja2)
+├── static/
+│   ├── css/
+│   │   ├── base.css              ← CSS variables & resets
+│   │   ├── header.css            ← Header & progress bar
+│   │   ├── hero.css              ← Hero section
+│   │   ├── metrics.css           ← Dashboard metric cards
+│   │   ├── form.css              ← Claim form layout
+│   │   ├── sidebar.css           ← Score ring & risk factors
+│   │   ├── history.css           ← Analysis history table
+│   │   ├── guide.css             ← Step-by-step guide
+│   │   └── loading.css           ← Loading overlay
+│   └── js/
+│       ├── data.js               ← Static data constants
+│       ├── ui.js                 ← UI update functions
+│       ├── guide.js              ← Guide panel content
+│       └── main.js               ← Entry point & API calls
+└── .vscode/
+    ├── launch.json               ← Run/debug config
+    └── settings.json             ← Editor settings
+```
+
+---
+
+## Quick Start in VS Code
+
+### 1. Place the CSV
+Copy `insurance_fraud_claims.csv` into the project root folder.
+
+### 2. Create a virtual environment
+```bash
+# In VS Code Terminal (Ctrl + `)
+python -m venv venv
+
+# Activate (Windows)
+venv\Scripts\activate
+
+# Activate (Mac/Linux)
+source venv/bin/activate
+```
+
+### 3. Install dependencies
+```bash
 pip install -r requirements.txt
+```
 
-Run the application:
+### 4. Run the app
 
+**Option A — VS Code Run button (F5):**
+- Open the Run & Debug panel (`Ctrl+Shift+D`)
+- Select **"Run InsureAI (Flask)"**
+- Press **F5**
+
+**Option B — Terminal:**
+```bash
 python app.py
+```
 
+### 5. Open in browser
+```
+http://127.0.0.1:5000
+```
 
+> On first launch, the model trains automatically (~30 seconds).
+> Subsequent launches load the cached model instantly from `model/insureai_model.pkl`.
 
+---
 
-📊 Future Improvements
+## Retrain the Model
 
-SHAP explainability integration
+If you want to retrain from scratch (e.g. after updating the CSV):
 
-Model retraining pipeline
+```bash
+# Delete the cached model
+del model\insureai_model.pkl    # Windows
+rm model/insureai_model.pkl     # Mac/Linux
 
-Cloud deployment (AWS / Azure)
+# Retrain
+python train_model.py
+```
 
-Dashboard for fraud analytics
+Or use the VS Code **"Train Model Only"** debug config.
 
-Continuous learning system
+---
 
+## Model Details
 
+| Property       | Value                        |
+|----------------|------------------------------|
+| Algorithm      | Gradient Boosting Classifier |
+| Estimators     | 300 trees                    |
+| Max Depth      | 6                            |
+| Learning Rate  | 0.05                         |
+| Features       | 29                           |
+| Training Data  | 1,000 real insurance claims  |
+| Fraud Rate     | 24.7%                        |
+| Accuracy       | ~80.5%                       |
+| ROC-AUC        | ~0.82                        |
 
+---
 
-📜 License
+## API Endpoints
 
-MIT License
+| Endpoint        | Method | Description                        |
+|-----------------|--------|------------------------------------|
+| `/`             | GET    | Serve the frontend                 |
+| `/api/predict`  | POST   | Score a claim (JSON body)          |
+| `/api/stats`    | GET    | Session statistics                 |
+| `/api/metadata` | GET    | Model info + dropdown option lists |
